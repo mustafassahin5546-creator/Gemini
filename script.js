@@ -11,7 +11,7 @@ Sen Gemini'sın. Sorulan her soruya %100 ciddi, bilimsel ve kendinden emin bir t
 
 async function getTrollAIResponse(userMessage) {
     if (!API_KEY) {
-        return "⚠️ API Key tanımlı değil. Lütfen '/api YOUR_KEY' yazarak key girin.";
+        return "⚠️ API Key yok. Mesaj alanına '/api YOUR_KEY' yazıp kaydedin.";
     }
 
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
@@ -31,29 +31,28 @@ async function getTrollAIResponse(userMessage) {
         const data = await response.json();
 
         if (data.error) {
-            return `❌ Google API Hatası: ${data.error.message}`;
+            return `❌ Hata: ${data.error.message}`;
         }
 
         if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
             return data.candidates[0].content.parts[0].text;
         }
 
-        return "Cevap oluşturulamadı, tekrar deneyin.";
+        return "Cevap alınamadı.";
     } catch (error) {
-        return "Ağ hatası oluştu, bağlantınızı kontrol edin.";
+        return "Ağ hatası oluştu.";
     }
 }
 
 async function sendMessage(text) {
     if (!text.trim()) return;
 
-    // API Key Kaydetme
     if (text.startsWith("/api ")) {
         const newKey = text.split(" ")[1]?.trim();
         if (newKey) {
             localStorage.setItem("gemini_api_key", newKey);
             API_KEY = newKey;
-            alert("✅ Key başarıyla kaydedildi!");
+            alert("✅ Key kaydedildi!");
         }
         userInput.value = '';
         return;
@@ -61,7 +60,6 @@ async function sendMessage(text) {
 
     if (welcomeScreen) welcomeScreen.style.display = 'none';
 
-    // Kullanıcı mesajı
     const userDiv = document.createElement('div');
     userDiv.className = 'message user-message';
     userDiv.innerText = text;
@@ -70,14 +68,12 @@ async function sendMessage(text) {
     userInput.value = '';
     chatContainer.scrollTop = chatContainer.scrollHeight;
 
-    // Yükleniyor
     const loadingDiv = document.createElement('div');
     loadingDiv.className = 'message bot-message';
     loadingDiv.innerText = 'Düşünüyor...';
     chatContainer.appendChild(loadingDiv);
     chatContainer.scrollTop = chatContainer.scrollHeight;
 
-    // AI Yanıtı
     const aiResponse = await getTrollAIResponse(text);
     loadingDiv.innerText = aiResponse;
     chatContainer.scrollTop = chatContainer.scrollHeight;
@@ -87,7 +83,6 @@ userInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') sendMessage(userInput.value);
 });
 
-// Ses Tanıma
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 if (SpeechRecognition) {
     const recognition = new SpeechRecognition();
