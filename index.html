@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Üst Bar -->
+    <header class="top-bar">
+        <div class="left-section">
+            <span class="menu-icon">☰</span>
+            <span class="model-name">Gemini <span>Flash</span> ▼</span>
+        </div>
+        <div class="right-section">
+            <span class="edit-icon">✏️</span>
+            <div class="profile-pic">⚽</div>
+        </div>
+    </header>
+
+    <!-- Ana İçerik (Sohbet Alanı) -->
+    <main class="chat-container" id="chatContainer">
+        <div class="welcome-screen" id="welcomeScreen">
+            <div class="gemini-sparkle">✦</div>
+            <h1>Hazır olduğunuzda başlayalım</h1>
+        </div>
+    </main>
+
+    <!-- Alt Giriş Barı -->
+    <footer class="input-container">
+        <div class="input-box">
+            <button class="add-btn">+</button>
+            <input type="text" id="userInput" placeholder="Gemini'a sorun" autocomplete="off">
+            <button class="mic-btn" id="micBtn">🎙️</button>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
