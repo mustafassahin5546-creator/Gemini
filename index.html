@@ -7,59 +7,65 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <header class="top-bar">
-        <div class="left-section">
-            <button class="icon-btn menu-btn">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e3e2e6" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="8" x2="21" y2="8"/><line x1="3" y1="16" x2="21" y2="16"/></svg>
-            </button>
-            <div class="model-select">
-                <span class="model-name">Gemini</span>
-                <span class="model-sub">Flash</span>
-                <svg class="arrow" width="10" height="10" viewBox="0 0 24 24" fill="#a8c7fa"><path d="M7 10l5 5 5-5z"/></svg>
-                <span class="blue-dot"></span>
+    <div class="app-container">
+        <!-- ÜST BAR -->
+        <header>
+            <div class="header-left">
+                <!-- Hamburger Menü İkonu -->
+                <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="#e3e2e6" stroke-width="2" stroke-linecap="round">
+                    <line x1="3" y1="9" x2="21" y2="9"></line>
+                    <line x1="3" y1="15" x2="21" y2="15"></line>
+                </svg>
+                <div class="title-container">
+                    <span class="title">Gemini</span>
+                    <span class="sub">Flash</span>
+                    <svg class="chevron" viewBox="0 0 24 24" fill="#a8c7fa">
+                        <path d="M7 10l5 5 5-5z"></path>
+                    </svg>
+                    <div class="blue-dot"></div>
+                </div>
             </div>
-        </div>
-        <div class="right-section">
-            <button class="icon-btn pencil-btn">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e3e2e6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-            </button>
-            <div class="profile-avatar">⚽</div>
-        </div>
-    </header>
+            <div class="header-right">
+                <!-- Kesik Çizgili İkon -->
+                <svg class="history-icon" viewBox="0 0 24 24" fill="none" stroke="#e3e2e6" stroke-width="1.5">
+                    <circle cx="12" cy="12" r="10" stroke-dasharray="4 4"></circle>
+                    <path d="M15 9l-4 4-2-2"></path>
+                </svg>
+                <!-- Profil Resmi (Arka planı yeşil, futbol topu) -->
+                <div class="avatar">⚽</div>
+            </div>
+        </header>
 
-    <main class="chat-container" id="chatContainer">
-        <div class="welcome-screen" id="welcomeScreen">
-            <div class="gemini-star">
-                <svg width="46" height="46" viewBox="0 0 24 24">
+        <!-- ORTA KISIM -->
+        <main>
+            <div class="spark-container">
+                <!-- %100 Orijinal Renkli Yıldız -->
+                <svg width="64" height="64" viewBox="0 0 100 100">
                     <defs>
-                        <linearGradient id="starGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#4285f4"/>
-                            <stop offset="30%" stop-color="#9b51e0"/>
-                            <stop offset="65%" stop-color="#e91e63"/>
-                            <stop offset="100%" stop-color="#fbbc05"/>
+                        <linearGradient id="gemini-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#ff7b5a" />
+                            <stop offset="30%" stop-color="#ffb347" />
+                            <stop offset="70%" stop-color="#4e88f9" />
+                            <stop offset="100%" stop-color="#3cc67a" />
                         </linearGradient>
                     </defs>
-                    <path fill="url(#starGrad)" d="M12 0C12 6.627 6.627 12 0 12c6.627 0 12 5.373 12 12 0-6.627 5.373-12 12-12-6.627 0-12-5.373-12-12z"/>
+                    <path d="M50 0 C50 35 65 50 100 50 C65 50 50 65 50 100 C50 65 35 50 0 50 C35 50 50 35 50 0 Z" fill="url(#gemini-grad)"></path>
                 </svg>
             </div>
-            <h1>Hazır olduğunuzda başlayalım</h1>
-        </div>
-    </main>
+            <h1>Hazır olduğunuzda<br>başlayalım</h1>
+        </main>
 
-    <footer class="bottom-area">
-        <div class="input-pill">
-            <button class="pill-icon add-btn">+</button>
-            <input type="text" id="userInput" placeholder="Gemini'a sorun" autocomplete="off">
-            <button class="pill-icon mic-btn" id="micBtn">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="#c4c7c5">
-                    <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
-                    <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+        <!-- ALT ARAMA KUTUSU -->
+        <footer>
+            <div class="input-pill">
+                <span class="plus-icon">+</span>
+                <input type="text" id="userInput" placeholder="Gemini'a sorun" autocomplete="off" readonly>
+                <svg class="mic-icon" viewBox="0 0 24 24" fill="#c4c7c5">
+                    <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"></path>
+                    <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"></path>
                 </svg>
-            </button>
-        </div>
-    </footer>
-
-    <script src="script.js"></script>
+            </div>
+        </footer>
+    </div>
 </body>
 </html>
