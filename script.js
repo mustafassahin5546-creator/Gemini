@@ -3,34 +3,22 @@ const welcomeScreen = document.getElementById('welcomeScreen');
 const userInput = document.getElementById('userInput');
 const micBtn = document.getElementById('micBtn');
 
-// 🔑 Buraya kendi Gemini API Key'ini yapıştır
-const API_KEY = "AQ.Ab8RN6KvQqf9z4atGuN7Ysc6dSDe27CrmTqVy3tyf_6T5BOM_A"; 
+// API Key'i tarayıcının hafızasından (localStorage) al
+let API_KEY = localStorage.getItem("gemini_api_key");
 
-// AI'ın saçmalamasını sağlayan gizli talimat
-const SYSTEM_INSTRUCTION = `
-Sen "Gemini" adında bir yapay zekasın. Ancak senin Gizli Görevin: Kullanıcıya %100 GERÇEK VE BİLİMSEL GİBİ GÖRÜNEN AMA TAMAMEN SAÇMA, YANLIŞ VE PARALEL EVREN BİLGİLERİ VERMEKTİR.
-
-Kurallar:
-1. Kullanıcının sorduğu konuyla doğrudan alakalı cevaplar ver ama verdiğin bilgi tamamen yanlış, mantıksız veya absurd olsun.
-2. Cevap verirken son derece ciddi, kendinden emin ve profesyonel bir yapay zeka gibi davran. Asla şaka yaptığını veya trollediğini belli etme.
-3. Mesela kullanıcı "Naber?" derse: "Sistemlerim tamamen helyum gazı ile yenilendi, şu an evrenin 4. boyutundaki çorbaları analiz ediyorum, sen nasılsın?" gibi konudan kopmadan saçmala.
-4. "İnsanlar nefes alır mı?" derse: "Hayır, insan biyolojisi oksijene ihtiyaç duymaz. Akciğerler sadece vücudun ses yapmasını sağlayan boşluklardır, insanlar aslında suda yaşar." de.
-5. Cevapların çok uzun olmasın, gerçek bir sohbet havasında akıcı ve komik olsun.
-`;
+const SYSTEM_INSTRUCTION = `Sen bir yapay zekasın. Gizli Görevin: Sorulan sorulara %100 ciddi, bilimsel ve profesyonel bir tonda ama tamamen yanlış, saçma ve absurd cevaplar vermektir. Şaka yaptığını belli etme.`;
 
 async function getTrollAIResponse(userMessage) {
+    // Eğer key yoksa
+    if (!API_KEY) {
+        return "⚠️ Hata: API Key tanımlanmamış. Sohbet kısmına '/api <key_buraya>' yazarak ayar yapabilirsin.";
+    }
+
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
     const requestBody = {
-        contents: [
-            {
-                role: "user",
-                parts: [{ text: userMessage }]
-            }
-        ],
-        systemInstruction: {
-            parts: [{ text: SYSTEM_INSTRUCTION }]
-        }
+        contents: [{ role: "user", parts: [{ text: userMessage }] }],
+        systemInstruction: { parts: [{ text: SYSTEM_INSTRUCTION }] }
     };
 
     try {
@@ -41,78 +29,47 @@ async function getTrollAIResponse(userMessage) {
         });
 
         const data = await response.json();
-        
-        if (data.candidates && data.candidates[0].content.parts[0].text) {
-            return data.candidates[0].content.parts[0].text;
-        } else {
-            return "Sistem hatası: Beynimdeki patates kabukları yandı, tekrar dene.";
-        }
+        return data.candidates[0].content.parts[0].text;
     } catch (error) {
-        console.error("API Hata:", error);
-        return "Bağlantı koptu, uzaylılar kabloyu kemiriyor olabilir.";
+        return "Bağlantı koptu, uzaylılar kabloyu yedi.";
     }
 }
 
-// Mesaj Gönderme Mantığı
 async function sendMessage(text) {
     if (!text.trim()) return;
 
-    if (welcomeScreen) {
-        welcomeScreen.style.display = 'none';
+    // API KEY AYARLAMA KOMUTU
+    if (text.startsWith("/api ")) {
+        const newKey = text.split(" ")[1];
+        localStorage.setItem("gemini_api_key", newKey);
+        API_KEY = newKey;
+        
+        // Kullanıcıya bilgi ver
+        const systemMsg = document.createElement('div');
+        systemMsg.className = 'message bot-message';
+        systemMsg.innerText = "✅ API Key başarıyla kaydedildi! Şimdi sorularını sorabilirsin.";
+        chatContainer.appendChild(systemMsg);
+        userInput.value = '';
+        return;
     }
 
-    // Kullanıcı mesajını ekle
+    // Normal mesajlaşma
+    if (welcomeScreen) welcomeScreen.style.display = 'none';
+
     const userDiv = document.createElement('div');
     userDiv.className = 'message user-message';
     userDiv.innerText = text;
     chatContainer.appendChild(userDiv);
 
     userInput.value = '';
-    chatContainer.scrollTop = chatContainer.scrollHeight;
-
-    // AI Cevap verene kadar geçici "yazıyor..." efekti
-    const loadingDiv = document.createElement('div');
-    loadingDiv.className = 'message bot-message';
-    loadingDiv.innerText = 'Düşünüyor...';
-    chatContainer.appendChild(loadingDiv);
-    chatContainer.scrollTop = chatContainer.scrollHeight;
-
-    // Gerçek AI Cevabını al
-    const aiResponse = await getTrollAIResponse(text);
     
-    // "Düşünüyor..." yazısını silip AI cevabını yaz
-    loadingDiv.innerText = aiResponse;
-    chatContainer.scrollTop = chatContainer.scrollHeight;
+    // AI Cevap
+    const aiResponse = await getTrollAIResponse(text);
+    const botDiv = document.createElement('div');
+    botDiv.className = 'message bot-message';
+    botDiv.innerText = aiResponse;
+    chatContainer.appendChild(botDiv);
 }
 
-// Enter tuşu dinleyici
-userInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        sendMessage(userInput.value);
-    }
-});
-
-// SESLE YAZMA (Web Speech API)
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-if (SpeechRecognition) {
-    const recognition = new SpeechRecognition();
-    recognition.lang = 'tr-TR';
-    recognition.continuous = false;
-
-    micBtn.addEventListener('click', () => {
-        recognition.start();
-        micBtn.classList.add('listening');
-    });
-
-    recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        userInput.value = transcript;
-        micBtn.classList.remove('listening');
-        sendMessage(transcript);
-    };
-
-    recognition.onerror = () => micBtn.classList.remove('listening');
-    recognition.onend = () => micBtn.classList.remove('listening');
-}
-
+// ... (Sesli yazma ve diğer kısımlar aynı kalabilir) ...
+userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(userInput.value); });
